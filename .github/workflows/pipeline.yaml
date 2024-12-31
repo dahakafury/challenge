@@ -1,0 +1,26 @@
+name: Build and Push Docker
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: self-hosted  
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Docker login
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t dahaka/challenge:latest .
+          docker push dahaka/challenge:latest
